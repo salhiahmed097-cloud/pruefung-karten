@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prüfung Karten</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <style>
+    body { font-family: Arial, sans-serif; background:#f6f6f6; margin:0; }
+    header { background:#fff; padding:15px; border-bottom:1px solid #ddd; }
+    h1 { margin:0; font-size:20px; }
+    select, button { font-size:16px; margin:5px 3px; padding:8px 12px; }
+    main { padding:20px; }
+    .card { background:#fff; padding:20px; border-radius:12px; min-height:200px; }
+    .q { font-size:20px; }
+    .a { display:none; margin-top:15px; border-top:1px dashed #ccc; padding-top:15px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Prüfung Karten</h1>
+  <select id="deck"></select>
+  <button onclick="next()">Nächste</button>
+  <button onclick="show()">Antwort</button>
+</header>
+
+<main>
+  <div class="card">
+    <div class="q" id="q">Frage</div>
+    <div class="a" id="a">Antwort</div>
+  </div>
+</main>
+
+<script>
+const decks = {
+ "Tag 1 – COPD":[
+  ["COPD ausschreiben","Chronic Obstructive Pulmonary Disease"],
+  ["4 Stadien COPD","Leicht – Mittel – Schwer – Sehr schwer"],
+  ["PESR","Problem – Ursache – Symptome – Ressourcen"]
+ ],
+ "Tag 2 – Salutogenese":[
+  ["Salutogenese","Entstehung und Erhaltung von Gesundheit"],
+  ["Kohärenzgefühl","Verstehbarkeit – Handhabbarkeit – Sinnhaftigkeit"]
+ ],
+ "Tag 3 – Ethik & Notfall":[
+  ["4 ethische Prinzipien","Autonomie – Nicht-Schaden – Fürsorge – Gerechtigkeit"],
+  ["ABCDE","Airway – Breathing – Circulation – Disability – Exposure"]
+ ]
+};
+
+let deckNames = Object.keys(decks);
+let d = 0, i = 0;
+
+const deckSel = document.getElementById("deck");
+deckNames.forEach((n,idx)=>{
+  let o=document.createElement("option");
+  o.value=idx; o.text=n; deckSel.add(o);
+});
+
+deckSel.onchange=()=>{ d=deckSel.value; i=0; draw(); };
+
+function draw(){
+ document.getElementById("q").innerText = decks[deckNames[d]][i][0];
+ document.getElementById("a").innerText = decks[deckNames[d]][i][1];
+ document.getElementById("a").style.display="none";
+}
+
+function next(){ i=(i+1)%decks[deckNames[d]].length; draw(); }
+function show(){ document.getElementById("a").style.display="block"; }
+
+draw();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
